@@ -1,14 +1,13 @@
 import unittest
 from app import app
 
-class TestApp(unittest.TestCase):
+class TestAPI(unittest.TestCase):
 
-    def test_hello_world(self):
-        tester = app.test_client(self)
-        response = tester.get('/')
-        statuscode = response.status_code
-        self.assertEqual(statuscode, 200)
-        self.assertEqual(response.data, b'Hello, World!')
+    def setUp(self):
+        app.testing = True
+        self.client = app.test_client()
 
-if __name__ == '__main__':
-    unittest.main()
+    def test_read_file(self):
+        response = self.client.get('/read_file')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('content', response.json)
